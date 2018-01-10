@@ -1,0 +1,44 @@
+---
+# Adding MariaDB repository
+- name: RedHat - Install MariaDB Repository
+  template:
+    src=mariadb-centos.repo.j2
+    dest="/etc/yum.repos.d/mariadb.repo"
+  when: ansible_os_family == "RedHat"
+  register: add_mariadb_repository
+  tags:
+    - redhat_add_mariadb_repository
+
+
+# Install EPEL repository and other required packages
+- name: RedHat - Install EPEL Release
+  package: name={{item}} state=latest
+  when: ansible_os_family == "RedHat" and add_mariadb_repository.changed == True
+  register: install_required_packages
+  with_items: "{{ required_packages }}"
+  tags:
+      - redhat_install_required_packages
+
+
+# Update all yum packages
+- name: RedHat - Update all packages
+  yum:
+    name: '*'
+    state: latest
+  when: ansible_os_family == "RedHat" and install_required_packages.changed == True
+  register: update_all_packages
+  tags:
+      - redhat_update_all_packages
+
+
+# Install MariaDB server/client and prerequisites
+- name: RedHat - Install MariaDB
+  package: name={{item}} state=latest
+  when: ansible_os_family == "RedHat" and update_all_packages.changed == True
+  register: install_mariadb
+  with_items:
+    - MariaDB-server
+    - MariaDB-client
+    - MySQL-python
+  tags:
+      - redhat_install_mariadb
