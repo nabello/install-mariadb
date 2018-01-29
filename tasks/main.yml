@@ -15,7 +15,7 @@
   yum:
     name: '*'
     state: latest
-  when: ansible_os_family == "RedHat" and install_required_packages.changed == True
+  when: ansible_os_family == "RedHat" and add_mariadb_repository.changed == True
   register: update_all_packages
   tags:
       - redhat_update_all_packages
