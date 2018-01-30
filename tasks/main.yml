@@ -27,8 +27,6 @@
   when: ansible_os_family == "RedHat" and update_all_packages.changed == True
   register: install_mariadb
   with_items:
-    - MariaDB-server
-    - MariaDB-client
-    - MySQL-python
+    - {{ mariadb_packages }}
   tags:
       - redhat_install_mariadb

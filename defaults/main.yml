@@ -1,2 +1,3 @@
 ---
 mariadb_version: '10.2'
+mariadb_packages: ['MariaDB-server', 'MariaDB-client', 'MySQL-python']
